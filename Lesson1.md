@@ -8,6 +8,29 @@
 - [fastai datasets](https://course.fast.ai/datasets)
 - [Lesson discussion thread](https://forums.fast.ai/t/lesson-1-discussion/27332)
 
+### Other resources
+- [Thread on creating your own image dataset](https://forums.fast.ai/t/tips-for-building-large-image-datasets/26688)
+- [What you need to do deep learning (fast.ai blog post including some basics on what GPUs are and why they're needed)](http://www.fast.ai/2017/11/16/what-you-need/)
+- [Original Paper for Oxford-IIIT Pet Dataset](http://www.robots.ox.ac.uk/~vgg/publications/2012/parkhi12a/parkhi12a.pdf)
+- [The Oxford-IIIT Pet Dataset](http://www.robots.ox.ac.uk/~vgg/data/pets/)
+- [What the Regular Expressions in the notebook meant](https://medium.com/@youknowjamest/parsing-file-names-using-regular-expressions-3e85d64deb69)
+- [Understanding Regular Expressions (12 minute video)](https://youtu.be/DRR9fOXkfRE)
+- [Visualize Regular Expressions](https://regexr.com/)
+- [Interactive tutorial to learn Regular Expressions](https://regexone.com/)
+- [Beginners Tutorial of Regular Expression](https://www.analyticsvidhya.com/blog/2015/06/regular-expression-python/)
+- [One-Cycle Policy Fitting paper](https://arxiv.org/abs/1803.09820)
+- [Visualizing and Understanding Convolutional Networks (paper)](https://arxiv.org/abs/1311.2901)
+- [Splunk and Tensorflow for Security](https://www.splunk.com/blog/2017/04/18/deep-learning-with-splunk-and-tensorflow-for-security-catching-the-fraudster-in-neural-networks-with-behavioral-biometrics.html)
+
+### How to scrape images
+Official course tutorial
+https://forums.fast.ai/t/tips-for-building-large-image-datasets/26688
+https://forums.fast.ai/t/generating-image-datasets-quickly/19079
+https://forums.fast.ai/t/how-to-scrape-the-web-for-images/7446/8
+Suggested Practice
+Create a model that can correctly classify images. Use lesson2-download.ipynb as a means of guidance. Remember, the more you practice the better you will get!
+
+
 ## Welcome! 
 
 Make sure your GPU environment is set up and you can run Jupyter Notebook

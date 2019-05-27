@@ -1,7 +1,12 @@
 # Lesson 1
 [Webpage](http://course-v3.fast.ai/) / [Video](https://youtu.be/BWWm4AzsdLk) /  [Lesson Forum](https://forums.fast.ai/t/lesson-1-official-resources-and-updates/27936) / [General Forum](https://forums.fast.ai/t/faq-resources-and-official-course-updates/27934/1)
 
-
+### Lesson resources 
+- [Course site](https://course.fast.ai/)
+- [Course repo](https://github.com/fastai/course-v3)
+- [fastai docs](http://docs.fast.ai/)
+- [fastai datasets](https://course.fast.ai/datasets)
+- [Lesson discussion thread](https://forums.fast.ai/t/lesson-1-discussion/27332)
 
 ## Welcome! 
 

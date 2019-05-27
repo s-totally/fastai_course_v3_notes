@@ -23,12 +23,11 @@
 - [Splunk and Tensorflow for Security](https://www.splunk.com/blog/2017/04/18/deep-learning-with-splunk-and-tensorflow-for-security-catching-the-fraudster-in-neural-networks-with-behavioral-biometrics.html)
 
 ### How to scrape images
-Official course tutorial
-https://forums.fast.ai/t/tips-for-building-large-image-datasets/26688
-https://forums.fast.ai/t/generating-image-datasets-quickly/19079
-https://forums.fast.ai/t/how-to-scrape-the-web-for-images/7446/8
-Suggested Practice
-Create a model that can correctly classify images. Use lesson2-download.ipynb as a means of guidance. Remember, the more you practice the better you will get!
+- [Official course tutorial](https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson2-download.ipynb)
+- [https://forums.fast.ai/t/tips-for-building-large-image-datasets/26688](https://forums.fast.ai/t/tips-for-building-large-image-datasets/26688)
+- [https://forums.fast.ai/t/generating-image-datasets-quickly/19079](https://forums.fast.ai/t/generating-image-datasets-quickly/19079)
+- [https://forums.fast.ai/t/how-to-scrape-the-web-for-images/7446/8](https://forums.fast.ai/t/how-to-scrape-the-web-for-images/7446/8)
+
 
 
 ## Welcome! 

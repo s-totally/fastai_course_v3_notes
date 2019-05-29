@@ -9,7 +9,7 @@
 - [Lesson discussion thread](https://forums.fast.ai/t/lesson-1-discussion/27332)
 
 ### Other resources
--[Top 10 fastai tips](https://blog.floydhub.com/ten-techniques-from-fast-ai/)
+- [10 techniques from fastai](https://blog.floydhub.com/ten-techniques-from-fast-ai/)
 - [Thread on creating your own image dataset](https://forums.fast.ai/t/tips-for-building-large-image-datasets/26688)
 - [What you need to do deep learning (fast.ai blog post including some basics on what GPUs are and why they're needed)](http://www.fast.ai/2017/11/16/what-you-need/)
 - [Original Paper for Oxford-IIIT Pet Dataset](http://www.robots.ox.ac.uk/~vgg/publications/2012/parkhi12a/parkhi12a.pdf)

@@ -22,6 +22,7 @@
 - [One-Cycle Policy Fitting paper](https://arxiv.org/abs/1803.09820)
 - [Visualizing and Understanding Convolutional Networks (paper)](https://arxiv.org/abs/1311.2901)
 - [Splunk and Tensorflow for Security](https://www.splunk.com/blog/2017/04/18/deep-learning-with-splunk-and-tensorflow-for-security-catching-the-fraudster-in-neural-networks-with-behavioral-biometrics.html)
+- [SGD with restarts](https://arxiv.org/pdf/1608.03983.pdf)
 
 ### How to scrape images
 - [Official course tutorial](https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson2-download.ipynb)

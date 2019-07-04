@@ -167,7 +167,7 @@ data.train_ds[0][0].data[:10]
 array([ 43,  44,  40,  34, 171,  62,   6, 352,   3,  47])
 ```
 
-That's numericalization. Here's the thing though. As you'll learn, every word in our vocab is going to require a separate row in a weight matrix in our neural net. So to avoid that weight matrix getting too huge, we restrict the vocab to no more than (by default) 60,000 words.  And if a word doesn't appear more than two times, we don't put it in the vocab either. So we keep the vocab to a reasonable size in that way. When you see these `xxunk`, that's an unknown token. It just means this was something that was not a common enough word to appear in our vocab.
+That's numericalization. As you'll learn, every word in our vocab is going to require a separate row in a weight matrix in our neural net. So to avoid that weight matrix getting too huge, we restrict the vocab to no more than (by default) 60,000 words.  And if a word doesn't appear more than two times, we don't put it in the vocab either. So we keep the vocab to a reasonable size in that way. When you see these `xxunk`, that's an unknown token. It just means this was something that was not a common enough word to appear in our vocab.
 
 We also have a couple of other special tokens like (see `fastai.text.transform.py` for up-to-date info):
 
@@ -532,9 +532,7 @@ If we compare it to last year's state of the art on IMDb, this is from The [CoVe
 
 ![](lesson4/3.png)
 
-So that was NLP. We'll be learning more about NLP later in this course. But now, I wanted to switch over and look at tabular. Now tabular data is pretty interesting because it's the stuff that, for a lot of you, is actually what you use day-to-day at work in spreadsheets, in relational databases, etc. 
-
-
+So that was NLP. We'll be learning more about NLP later in this course. But now, I wanted to switch over and look at tabular. 
 
 **Question**: Where does the magic number of <img src="https://latex.codecogs.com/gif.latex?2.6^{4}" title="2.6^{4}" /> in the learning rate come from? [[33:38](https://youtu.be/C9UdVPE3ynA?t=2018)]
 
@@ -542,51 +540,41 @@ So that was NLP. We'll be learning more about NLP later in this course. But now,
 learn.fit_one_cycle(2, slice(1e-3/(2.6**4),1e-3), moms=(0.8,0.7))
 ```
 
-Good question. So the learning rate is various things divided by 2.6 to the fourth. The reason it's to the fourth, you will learn about at the end of today. So let's focus on the 2.6. Why 2.6? Basically, as we're going to see in more detail later today, this number, the difference between the bottom of the slice and the top of the slice is basically what's the difference between how quickly the lowest layer of the model learns versus the highest layer of the model learns. So this is called discriminative learning rates. So really the question is as you go from layer to layer, how much do I decrease the learning rate by? And we found out that for NLP RNNs, the answer is 2.6. 
+The learning rate is various things divided by 2.6 to the fourth. The reason it's to the fourth, you will learn about at the end of today. So let's focus on the 2.6. Basically, as we're going to see in more detail later today, this number, the difference between the bottom of the slice and the top of the slice is basically what's the difference between how quickly the lowest layer of the model learns versus the highest layer of the model learns. So this is called discriminative learning rates. So really the question is as you go from layer to layer, how much do I decrease the learning rate by? And we found out that for NLP RNNs, the answer is 2.6. 
 
 How do we find out that it's 2.6? I ran lots and lots of different models using lots of different sets of hyper parameters of various types (dropout, learning rates,  and discriminative learning rate and so forth), and then I created something called a random forest which is a kind of model where I attempted to predict how accurate my NLP classifier would be based on the hyper parameters. And then I used random forest interpretation methods to basically figure out what the optimal parameter settings were, and I found out that the answer for this number was 2.6. So that's actually not something I've published or I don't think I've even talked about it before, so there's a new piece of information. Actually, a few months after I did this, Stephen Merity and somebody else did publish a paper describing a similar approach, so the basic idea may be out there already. 
 
-Some of that idea comes from a researcher named Frank Hutter and one of his collaborators. They did some interesting work showing how you can use random forests to actually find optimal hyperparameters. So it's kind of a neat trick. A lot of people are very interested in this thing called Auto ML which is this idea of like building models to figure out how to train your model. We're not big fans of it on the whole. But we do find that building models to better understand how your hyper parameters work, and then finding those rules of thumb like oh basically it can always be 2.6 quite helpful. So there's just something we've kind of been playing with.
+Some of that idea comes from a researcher named Frank Hutter and one of his collaborators. They did some interesting work showing how you can use random forests to actually find optimal hyperparameters. A lot of people are very interested in this thing called Auto ML which is building models to figure out how to train your model, and then finding those rules of thumb.
 
 
 
-### Back to Tabular [[36:41](https://youtu.be/C9UdVPE3ynA?t=2201)]
+### Tabular [[36:41](https://youtu.be/C9UdVPE3ynA?t=2201)]
 
-Let's talk about tabular data. Tabular data such as you might see in a spreadsheet, a relational database, or financial report, it can contain all kinds of different things. I tried to make a little list of some of the kinds of things that I've seen tabular data analysis used for:
+Let's talk about tabular data, such as you might see in a spreadsheet, a relational database, or financial report, it can contain all kinds of different things. I tried to make a little list of some of the kinds of things that I've seen tabular data analysis used for:
 
 ![](lesson4/4.png)
 
-Using neural nets for analyzing tabular data﹣when we first presented this, people were deeply skeptical. They thought it was a terrible idea to use neural nets to analyze tabular data, because everybody knows that you should use logistic regression, random forests, or gradient boosting machines (all of which have their place for certain types of things). But since that time, it's become clear that the commonly held wisdom is wrong. It's not true that neural nets are not useful for tabular data ,in fact they are extremely useful. We've shown this in quite a few of our courses, but what's really helped is that some really effective organizations have started publishing papers and posts describing how they've been using neural nets for analyzing tabular data. 
+Neural nets are extremely useful for tabular data. Although feature engineering doesn't go away, it certainly becomes simpler. Pinterest, for example, replaced the gradient boosting machines that they were using to decide how to put stuff on their homepage with neural nets. They presented at a conference this approach, and described how it really made engineering a lot easier because a lot of the hand created features weren't necessary anymore. You still need some, but it was just simpler. So they ended up with something that was more accurate, but perhaps even more importantly, it required less maintenance. I wouldn't say it's the only tool that you need in your toolbox for analyzing tabular data. But where I used to use random forests 99% of the time when I was doing machine learning with tabular data, I now use neural nets 90% of the time. It's my standard first go-to approach now, and it tends to be pretty reliable and effective.
 
-One of the key things that comes up again and again is that although feature engineering doesn't go away, it certainly becomes simpler. So Pinterest, for example, replaced the gradient boosting machines that they were using to decide how to put stuff on their homepage with neural nets. And they presented at a conference this approach, and they described how it really made engineering a lot easier because a lot of the hand created features weren't necessary anymore. You still need some, but it was just simpler. So they ended up with something that was more accurate, but perhaps even more importantly, it required less maintenance. So I wouldn't say you it's the only tool that you need in your toolbox for analyzing tabular data. But where else, I used to use random forests 99% of the time when I was doing machine learning with tabular data, I now use neural nets 90% of the time. It's my standard first go-to approach now, and it tends to be pretty reliable and effective.
-
-One of the things that's made it difficult is that until now there hasn't been an easy way to create and train tabular neural nets. Nobody has really made it available in a library. So we've actually just created `fastai.tabular` and I think this is pretty much the first time that's become really easy to use neural nets with tabular data. So let me show you how easy it is.
+One of the things that's made it difficult is that until now there hasn't been an easy way to create and train tabular neural nets. Nobody has really made it available in a library. So we've actually just created `fastai.tabular` and I think this is pretty much the first time that's become really easy to use neural nets with tabular data. 
 
 #### Tabular examples [[39:51](https://youtu.be/C9UdVPE3ynA?t=2391)]
 
 [lesson4-tabular.ipynb](https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson4-tabular.ipynb)
 
-This is actually coming directly from the examples folder in the fastai repo. I haven't changed it at all. As per usual, as well as importing fastai, import your application﹣so in this case, it's tabular.
+As usual, as well as importing fastai, import your application﹣so in this case, it's tabular.
 
 ```python
 from fastai import *
 from fastai.tabular import *
 ```
 
-We assume that your data is in a Pandas DataFram. Pandas DataFrame is the standard format for tabular data in Python. There are lots of ways to get it in there, but probably the most common might be `pd.read_csv`. But whatever your data is in, you can probably get it into a Pandas data frame easily enough.
-
 ```python
 path = untar_data(URLs.ADULT_SAMPLE)
 df = pd.read_csv(path/'adult.csv')
 ```
 
-
-
-**Question**: What are the 10% of cases where you would not default to neural nets? [[40:41](https://youtu.be/C9UdVPE3ynA?t=2441)]
-
-Good question. I guess I still tend to give them a try. But yeah, I don't know. It's kind of like as you do things for a while, you start to get a sense of the areas where things don't quite work as well. I have to think about that during the week. I don't think I have a rule of thumb. But I would say, you may as well try both. I would say try a random forest and try a neural net. They're both pretty quick and easy to run, and see how it looks. If they're roughly similar, I might dig into each and see if I can make them better. But if the random forest is doing way better, I'd probably just stick with that. Use whatever works.
-
-So we start with the data in a data frame, and so we've got an adult sample﹣it's a classic old dataset. It's a pretty small simple old dataset that's good for experimenting with. And it's a CSV file, so you can read it into a data frame with Pandas read CSV (`pd.read_csv`). If your data is in a relational database, Pandas can read from that. If it's in spark or Hadoop, Pandas can read from that. Pandas can read from most stuff that you can throw at it. So that's why we use it as a default starting point.
+We start with the data in a Pandas data frame, we've got an adult sample﹣it's a classic old dataset. If your data is in a relational database, Pandas can read from that. If it's in spark or Hadoop, Pandas can read from that. 
 
 ```python
 dep_var = '>=50k'
@@ -607,21 +595,16 @@ data = (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_
                            .databunch())
 ```
 
-As per usual, I think it's nice to use the data block API. So in this case, the list that we're trying to create is a tabular list and we're going to create it from a data frame. So you can tell it:
+As usual, I think it's nice to use the data block API. So in this case, the list that we're trying to create is a tabular list and we're going to create it from a data frame. So you can tell it:
 
 - What the data frame is. 
 - What the path that you're going to use to save models and intermediate steps is.
 - Then you need to tell it what are your categorical variables and what are your continuous variables. 
 
-##### Continuous vs. Categorical [[43:07](https://youtu.be/C9UdVPE3ynA?t=2587)]
-
-We're going to be learning a lot more about what that means to the neural net next week, but for now the quick summary is this. Your independent variables are the things that you're using to make predictions with. So things like education, marital status, age, and so forth. Some of those variables like age are basically numbers. They could be any number. You could be 13.36 years old or 19.4 years old or whatever. Where else, things like marital status are options that can be selected from a discrete group: married, single, divorced, whatever. Sometimes those options might be quite a lot more, like occupation. There's a lot of possible occupations. And sometimes, they might be binary (i.e. true or false). But anything which you can select the answer from a small group of possibilities is called a **categorical variable**. So we're going to need to use a different approach in the neural net to modeling categorical variables to what we use for continuous variables. For categorical variables, we're going to be using something called **embeddings** which we'll be learning about later today. For continuous variables, they could just be sent into the neural net just like pixels in a neural net can. Because pixels in a neural net are already numbers; these continuous things are already numbers as well. So that's easy. 
-
-So that's why you have to tell the tabular list from data frame which ones are which. There are some other ways to do that by pre-processing them in Pandas to make things categorical variables, but it's kind of nice to have one API for doing everything; you don't have to think too much about it.
 
 ##### Processor [[45:04](https://youtu.be/C9UdVPE3ynA?t=2704)]
 
-Then we've got something  which is a lot like transforms in computer vision. Transforms in computer vision do things like flip a photo on its axis, turn it a bit, brighten it, or normalize it. But for tabular data, instead of having transforms, we have things called processes. And they're nearly identical but the key difference, which is quite important, is that a processor is something that happens ahead of time. So we basically pre-process the data frame rather than doing it as we go. So transformations are really for data augmentation﹣we want to randomize it and do it differently each time. Or else, processes are the things that you want to do once, ahead of time.
+This is a lot like transforms in computer vision, which do things like flip a photo on its axis, turn it a bit, brighten it, or normalize it. A processor happens ahead of time, we basically pre-process the data frame rather than doing it as we go. So transformations are really for data augmentation﹣we want to randomize it and do it differently each time. Processes are the things that you want to do once, ahead of time.
 
 ```python
 procs = [FillMissing, Categorify, Normalize]
@@ -629,19 +612,16 @@ procs = [FillMissing, Categorify, Normalize]
 
 We have a number of processes in the fastai library. And the ones we're going to use this time are: 
 
-- `FillMissing`: Look for missing values and deal with them some way. 
+- `FillMissing`: Look for missing values and deal with them some way (replace it with the median and add a new column which is a binary column of saying whether that was missing or not) 
 - `Categorify`: Find categorical variables and turn them into Pandas categories
 - `Normalize` : Do a normalization ahead of time which is to take continuous variables and subtract their mean and divide by their standard deviation so they are zero-one variables.
 
-The way we deal with missing data, we'll talk more about next week, but in short, we replace it with the median and add a new column which is a binary column of saying whether that was missing or not. 
 
-For all of these things, whatever you do to the training set, you need to do exactly the same thing to the validation set and the test set. So whatever you replaced your missing values with, you need to replace them with exactly the same thing in the validation set. So fastai handles all these details for you. They are the kinds of things that if you have to do it manually, if you like me, you'll screw it up lots of times until you finally get it right. So that's what these processes are here.
+For all of these things, whatever you do to the training set, you need to do exactly the same thing to the validation set and the test set. So whatever you replaced your missing values with, you need to replace them with exactly the same thing in the validation set. Fastai handles all these details for you. 
 
-Then we're going to split into training versus validation sets. And in this case, we do it by providing a list of indexes so the indexes from 800 to a thousand. It's very common. I don't quite remember the details of this dataset, but it's very common for wanting to keep your validation sets to be contiguous groups of things. If they're map tiles, they should be the map tiles that are next to each other, if their time periods, they should be days that are next to each other, if they are video frames, they should be video frames next to each other. Because otherwise you're kind of cheating. So it's often a good idea to use `split_by_idx` and to grab a range that's next to each other if your data has some kind of structure like that or find some other way to structure it in that way.
+Then we're going to split into training versus validation sets. And in this case, we do it by providing a list of indexes so the indexes from 800 to a thousand, to keep your validation sets to be contiguous groups of things. If they're map tiles, they should be the map tiles that are next to each other, if their time periods, they should be days that are next to each other, if they are video frames, they should be video frames next to each other. So it's often a good idea to use `split_by_idx` and to grab a range that's next to each other if your data has some kind of structure like that or find some other way to structure it in that way.
 
-All right, so that's now given us a  training and a validation set. We now need to add labels. In this case, the labels can come straight from the data frame we grabbed earlier, so we just have to tell it which column it is. So the dependent variable is whether they're making over $50,000 salary. That's the thing we're trying to predict.
-
-We'll talk about test sets later, but in this case we can add a test set. And finally get our data bunch. S at that point, we have something that looks like this:
+We now need to add labels. In this case, the labels can come straight from the data frame we grabbed earlier, so we just have to tell it which column it is. 
 
 ```python
 data.show_batch(rows=10)
@@ -660,7 +640,7 @@ data.show_batch(rows=10)
 | Private          | Some-college | Married-civ-spouse | Sales             | Husband        | White | False            | 1.5695  | -0.8876 | -0.0312       | 1      |
 | Local-gov        | Some-college | Never-married      | Handlers-cleaners | Own-child      | White | False            | -0.6294 | -1.5422 | -0.0312       | 0      |
 
-There is our data. Then to use it, it looks very familiar. You get a learner, in this case it's a tabular learner, passing in the data, some information about your architecture, and some metrics. And you then call fit.
+
 
 ```python
 learn = tabular_learner(data, layers=[200,100], metrics=accuracy)
@@ -678,33 +658,20 @@ epoch  train_loss  valid_loss  accuracy
 
 
 
-**Question**: How to combine NLP (tokenized) data with meta data (tabular data) with Fastai? For instance, for IMBb classification, how to use information like who the actors are, year made, genre, etc. [[49:14](https://youtu.be/C9UdVPE3ynA?t=2954)]
-
-Yeah, we're not quite up to that yet. So we need to learn a little bit more about how neural net architectures work as well. But conceptually, it's kind of the same as the way we combine categorical variables and continuous variables. Basically in the neural network, you can have two different sets of inputs merging together into some layer. It could go into an early layer or into a later layer, it kind of depends. If it's like text and an image and some metadata, you probably want the text going into an RNN, the image going into a CNN, the metadata going into some kind of tabular model like this. And then you'd have them basically all concatenated together, and then go through some fully connected layers and train them end to end. We will probably largely get into that in part two. In fact we might entirely get into that in part two. I'm not sure if we have time to cover it in part one. But conceptually, it's a fairly simple extension of what we'll be learning in the next three weeks.
-
-**Question**: Do you think that things like `scikit-learn` and `xgboost` will eventually become outdated? Will everyone will use deep learning tools in the future? Except for maybe small datasets?[[50:36](https://youtu.be/C9UdVPE3ynA?t=3036)]
-
-I have no idea. I'm not good at making predictions. I'm not a machine learning model. I mean `xgboost` is a really nice piece of software. There's quite a few really nice pieces of software for gradient boosting in particular. Actually, random forests in particular has some really nice features for interpretation which I'm sure we'll find similar versions for neural nets, but they don't necessarily exist yet. So I don't know. For now, they're both useful tools. `scikit-learn` is a library that's often used for pre-processing and running models. Again, it's hard to predict where things will end up. In some ways, it's more focused on some older approaches to modeling, but I don't know. They keep on adding new things, so we'll see. I keep trying to incorporate more scikit-learn stuff into fastai and then I keep finding ways I think I can do it better and I throw it away again, so that's why there's still no scikit-learn dependencies in fastai. I keep finding other ways to do stuff.
-
-
-
 [[52:12](https://youtu.be/C9UdVPE3ynA?t=3132)]
 
 ![](lesson4/5.png)
 
-We're gonna learn what `layers=` means either towards the end of class today or the start of class next week, but this is where we're basically defining our architecture just like when we chose ResNet 34 or whatever for conv nets. We'll look at more about metrics in a moment, but just to remind you, metrics are just the things that get printed out. They don't change our model at all. So in this case, we're saying I want you to print out the accuracy to see how we're doing.
-
-So that's how to do tabular. This is going to work really well because we're gonna hit our break soon. And the idea was that after three and a half lessons, we're going to hit the end of all of the quick overview of applications, and then I'm going to go down on the other side. I think we're going to be to the minute, we're going to hit it. Because the next one is collaborative filtering.
 
 ### Collaborative Filtering [[53:08](https://youtu.be/C9UdVPE3ynA?t=3188)]
 
-Collaborative filtering is where you have information about who bought what, or who liked what﹣ it's basically something where you have something like a user, a reviewer, or whatever and information about what they've bought, what they've written about, or what they reviewed. So in the most basic version of collaborative filtering, you just have two columns: something like user ID and movie ID and that just says this user bought that movie. So for example, Amazon has a really big list of user IDs and product IDs like what did you buy. Then you can add additional information to that table such as oh, they left a review, what review did they give it? So it's now like user ID, movie ID, number of stars. You could add a timecode so  this user bought this product at this time and gave it this review. But they are all basically the same structure.  
+Collaborative filtering is where you have information about who bought what, or who liked what﹣ it's something where you have something like a user, a reviewer, or whatever and information about what they've bought, what they've written about, or what they reviewed. In the most basic version of collaborative filtering, you just have two columns: something like user ID and movie ID and that just says this user bought that movie. So for example, Amazon has a really big list of user IDs and product IDs. Then you can add additional information to that table such as a review? So it's now user ID, movie ID, number of stars. You could add a timecode so  this user bought this product at this time and gave it this review. 
 
-There are two ways you could draw that collaborative filtering structure. One is a two-column approach where you've got user and movie. And you've got user ID, movie ID﹣each pair basically describes that user watch that movie, possibly also number of stars (3, 4, etc). The other way you could write it would be you could have like all the users down here and all the movies along here.  And then,  you can look and find a particular cell in there to find out what could be the rating of that user for that movie, or there's just a `1` there if that user watched that movie, or whatever.
+There are two ways you could draw that collaborative filtering structure. One is a two-column approach where you've got user and movie. And you've got user ID, movie ID﹣each pair basically describes that user watch that movie, possibly also number of stars (3, 4, etc). The other way you could write it would be you could have like all the users down here and all the movies along here.  You can look and find a particular cell in there to find out what could be the rating of that user for that movie, or there's just a `1` there if that user watched that movie, or whatever.
 
 ![](lesson4/whiteboard.gif)
 
-So there are two different ways of representing the same information. Conceptually, it's often easier to think of it this way (the matrix on the right), but most of the time you won't store it that way. Explicitly because most of the time, you'll have what's called a very sparse matrix which is to say most users haven't watched most movies or most customers haven't purchased most products. So if you store it as a matrix where every combination of customer and product is a separate cell in that matrix, it's going to be enormous. So you tend to store it like the left or you can store it as a matrix using some kind of special sparse matrix format. If that sounds interesting, you should check out [Rachel's computational linear algebra course](https://github.com/fastai/numerical-linear-algebra/blob/master/README.md) on fastai where we have lots and lots of information about sparse matrix storage approaches. For now though, we're just going to kind of keep it in this format on left hand side.
+So there are two different ways of representing the same information. Conceptually, it's often easier to think of it this way (the matrix on the right), but most of the time you won't store it that way. Explicitly because most of the time, you'll have what's called a very sparse matrix which is to say most users haven't watched most movies or most customers haven't purchased most products. So if you store it as a matrix where every combination of customer and product is a separate cell in that matrix, it's going to be enormous. So you tend to store it like the left or you can store it as a matrix using some kind of special sparse matrix format. [Rachel's computational linear algebra course](https://github.com/fastai/numerical-linear-algebra/blob/master/README.md) on fastai has lots of information about sparse matrix storage approaches. For now we're just going to kind of keep it in this format on left hand side.
 
 
 
@@ -748,11 +715,7 @@ ratings.head()
 | 3    | 358    | 1210    | 5.0    | 957481884  |
 | 4    | 130    | 316     | 2.0    | 1138999234 |
 
-It's a CSV so you can read it with Pandas and here it is. It's basically a list of user IDs﹣we don't actually know anything about who these users are. There's some movie IDs. There is some information about what the movies are, but we won't look at that until next week. Then there's the rating and the timestamp. We're going to ignore the timestamp for now. So that's a subset of our data. `head` in Pandas is just the first rows.
-
-
-
-So now that we've got a data frame, the nice thing about collaborative filtering is it's incredibly simple. 
+It's a CSV so you can read it with Pandas. It's a list of user IDs﹣we don't actually know anything about who these users are. There's some movie IDs. There is some information about what the movies are, . Then there's the rating and the timestamp. We're going to ignore the timestamp for now. 
 
 ```python
 data = CollabDataBunch.from_df(ratings, seed=42)
@@ -767,7 +730,7 @@ learn = collab_learner(data, n_factors=50, y_range=y_range)
 ```
 
 
-That's all the data that we need. So you can now go ahead and say get `collab_learner` and you can pass in the data bunch. The architecture, you have to tell it how many factors you want to use, and we're going to learn what that means after the break. And then something that could be helpful is to tell it what the range of scores are. We're going to see how that helps after the break as well. So in this case, the minimum score is 0, the maximum score is 5. 
+That's all the data that we need. So you can now go ahead and say get `collab_learner` and you can pass in the data bunch. The minimum score is 0, the maximum score is 5. 
 
 
 ```python
@@ -786,23 +749,23 @@ Now that you've got a learner, you can go ahead and call `fit_one_cycle` and tra
 
 #### Cold start problem [[58:55](https://youtu.be/C9UdVPE3ynA?t=3535)]
 
-This is obviously a super useful application that a lot of you are probably going to try during the week. In past classes, a lot of people have taken this collaborative filtering approach back to their workplaces and discovered that using it in practice is much more tricky than this. Because in practice, you have something called the cold start problem. So the cold start problem is that the time you particularly want to be good at recommending movies is when you have a new user, and the time you particularly care about recommending a movie is when it's a new movie. But at that point, you don't have any data in your collaborative filtering system and it's really hard. 
+The cold start problem is that the time you particularly want to be good at recommending movies is when you have a new user, and the time you particularly care about recommending a movie is when it's a new movie. But at that point, you don't have any data in your collaborative filtering system and it's really hard. 
 
-As I say this, we don't currently have anything built into fastai to handle the cold start problem and that's really because the cold start problem, the only way I know of to solve it (in fact, the only way I think that conceptually can solve it) is to have a second model which is not a collaborative filtering model but a metadata driven model for new users or new movies.
+We don't currently have anything built into fastai to handle the cold start problem and the only way I know of to solve it is to have a second model which is not a collaborative filtering model but a metadata driven model for new users or new movies.
 
-I don't know if Netflix still does this, but certainly what they used to do when I signed up to Netflix was they started showing me lots of movies and saying "have you seen this?" "did you like it?" ﹣so they fixed the cold start problem through the UX, so there was no cold stat problem. They found like 20 really common movies and asked me if I liked them, they used my replies to those 20 to show me 20 more that I might have seen, and by the time I had gone through 60,  there was no cold start problem anymore.
+I don't know if Netflix still does this, but certainly what they used to do when I signed up to Netflix was they started showing me lots of movies and saying "have you seen this?" "did you like it?" ﹣so they fixed the cold start problem through the UX. They found like 20 really common movies and asked me if I liked them, they used my replies to those 20 to show me 20 more that I might have seen, and by the time I had gone through 60,  there was no cold start problem anymore.
 
 For new movies, it's not really a problem because like the first hundred users who haven't seen the movie go in and say whether they liked it, and then the next hundred thousand, the next million, it's not a cold start problem anymore. 
 
-The other thing you can do if you, for whatever reason, can't go through that UX of asking people did you like those things (for example if you're selling products and you don't really want to show them a big selection of your products and say did you like this because you just want them to buy), you can instead try and use a metadata based tabular model what geography did they come from maybe you know their age and sex, you can try and make some guesses about the initial recommendations. 
+The other thing you can do if you can't go through that UX of asking people did you like those things (for example if you're selling products and you don't really want to show them a big selection of your products and say did you like this because you just want them to buy), is try and use a metadata based tabular model like what geography did they come from, their age and sex.
 
-So collaborative filtering is specifically for once you have a bit of information about your users and movies or customers and products or whatever.
+So collaborative filtering is specifically for once you have a bit of information about your users and movies or customers and products.
 
 [[1:01:37](https://youtu.be/C9UdVPE3ynA?t=3697)]
 
 **Question**: How does the language model trained in this manner perform on code switched data (Hindi written in English words), or text with a lot of emojis?
 
-Text with emojis, it'll be fine. There's not many emojis in Wikipedia and where they are at Wikipedia it's more like a Wikipedia page about the emoji rather than the emoji being used in a sensible place. But you can (and should) do this language model fine-tuning where you take a corpus of text where people are using emojis in usual ways, and so you fine-tune the Wikitext language model to your reddit or Twitter or whatever language model. And there aren't that many emojis if you think about it. There are hundreds of thousands of possible words that people can be using, but a small number of possible emojis. So it'll very quickly learn how those emojis are being used. So that's a piece of cake. 
+There's not many emojis in Wikipedia and where they are at Wikipedia it's more like a Wikipedia page about the emoji rather than the emoji being used in a sensible place. But you can (and should) do this language model fine-tuning where you take a corpus of text where people are using emojis in usual ways, so you fine-tune the Wikitext language model to your reddit or Twitter language model. And there aren't that many emojis. There are hundreds of thousands of possible words that people can be using, but a small number of possible emojis. So it'll very quickly learn how those emojis are being used.
 
 I'm not really familiar with Hindi, but I'll take an example I'm very familiar with which is Mandarin. In Mandarin, you could have a model that's trained with Chinese characters. There are about five or six thousand Chinese characters in common use, but there's also a romanization of those characters called pinyin. It's a bit tricky because although there's a nearly direct mapping from the character to the pinyin (I mean there is a direct mapping but that pronunciations are not exactly direct),  there isn't direct mapping from the pinyin to the character because one pinyin corresponds to multiple characters. 
 
@@ -810,26 +773,7 @@ So the first thing to note is that if you're going to use this approach for Chin
 
 Actually fastai has something called [Language Model Zoo](https://forums.fast.ai/t/language-model-zoo-gorilla/14623) where we're adding more and more language models for different languages, and also increasingly for different domain areas like English medical texts or even language models for things other than NLP like genome sequences, molecular data, musical MIDI notes, and so forth.  So you would you obviously start there.
 
-To then convert that (in either simplified or traditional Chinese) into pinyin, you could either map the vocab directly, or as you'll learn, these multi-layer models﹣it's only the first layer that basically converts the tokens into a set of vectors, you can actually throw that away and fine-tune just the first layer of the model. So that second part is going to require a few more weeks of learning before you exactly understand how to do that and so forth, but if this is something you're interested in doing, we can talk about it on the forum because it's a nice test of understanding.
-
-
-
-**Question**: What about time series on tabular data? is there any RNN model involved in `tabular.models`? [[1:05:09](https://youtu.be/C9UdVPE3ynA?t=3909)] 
-
-We're going to look at time series tabular data next week, but the short answer is generally speaking you don't use a RNN for time series tabular data but instead, you extract a bunch of columns for things like day of week, is it a weekend, is it a holiday, was the store open, stuff like that. It turns out that adding those extra columns which you can do somewhat automatically basically gives you state-of-the-art results. There are some good uses of RNNs for time series, but not really for these kind of tabular style time series (like retail store logistics databases, etc).
-
-
-
-**Question**: Is there a source to learn more about the cold start problem? [[1:06:14](https://youtu.be/C9UdVPE3ynA?t=3974)]
-
-I'm gonna have to look that up. If you know a good resource, please mention it on the forums.
-
-
-
-#### The half way point [[1:06:34](https://youtu.be/C9UdVPE3ynA?t=3994)]
-
-That is both the break in the middle of lesson 4, it's the halfway point of the course, and it's the point at which we have now seen an example of all the key applications. So the rest of this course is going to be digging deeper into how they actually work behind the scenes, more of the theory, more of how the source code is written, and so forth. So it's a good time to have a nice break. Furthermore, it's my birthday today, so it's a really special moment.
-
+To then convert that (in either simplified or traditional Chinese) into pinyin, you could map the vocab directly. Or, since in multi-layer models it's only the first layer that converts the tokens into a set of vectors, you can actually throw that away and fine-tune just the first layer of the model. So that second part is going to require a few more weeks of learning before you exactly understand how to do that, but if this is something you're interested in doing, we can talk about it on the forum because it's a nice test of understanding.
 
 
 ### Collaborative filter with Microsoft Excel [[1:07:25](https://youtu.be/C9UdVPE3ynA?t=4045)]
@@ -838,49 +782,32 @@ That is both the break in the middle of lesson 4, it's the halfway point of the 
 
 ![](lesson4/6.png)
 
-Microsoft Excel is one of my favorite ways to explore data and understand models. I'll make sure I put this in the repo, and actually this one, we can probably largely do in Google sheets. I've tried to move as much as I can over the last few weeks into Google sheets, but I just keep finding this is such a terrible product, so please try to find a copy of Microsoft Excel because there's nothing close, I've tried everything. Anyway, spreadsheets get a bad rap from people that basically don't know how to use them. Just like people who spend their life on Excel and then they start using Python, and they're like what the heck is this stupid thing.  It takes thousands of hours to get really good at spreadsheets, but a few dozen hours to get confident at them. Once you're confident at them, you can see everything in front of you. It's all laid out, it's really great. 
+Microsoft Excel is one of my favorite ways to explore data and understand models. So here's some data, and one way to look at collaborative filtering data is like this:![](lesson4/7.png)
 
-### Jeremy's spreadsheet tip of the day!  [[1:08:37](https://youtu.be/C9UdVPE3ynA?t=4117)]
+We grabbed from the MovieLens data the people that watched the most movies and movies that were the most watched, and limited the dataset down to those 15. When you do it that way, it's not sparse anymore. There's just a small number of gaps. This is something that we can now build a model with. We want to create something which can predict for user 293, will they like movie 49, for example. So we've got to come up with some function that can represent that decision. 
 
-I'll give you one spreadsheet tip today which is if you hold down the <kbd>ctrl</kbd> key or <kbd>command</kbd> key on your keyboard and press the arrow keys, here's <kbd>ctrl</kbd>+<kbd>➜</kbd>, it takes you to the end of a block of a table that you're in. And it's by far the best way to move around the place, so there you go.
-
-In this case, I want to skip around through this table, so I can hit <kbd>ctrl</kbd>+ <kbd>⬇︎</kbd> <kbd>➜</kbd> to get to the bottom right, <kbd>ctrl</kbd>+ <kbd>⬅︎</kbd> <kbd>⬆︎</kbd> to get to the top left. Skip around and see what's going on.
-
-So here's some data, and as we talked about, one way to look at collaborative filtering data is like this:![](lesson4/7.png)
-
-What we did was we grabbed from the MovieLens data the people that watched the most movies and the movies that were the most watched, and just limited the dataset down to those 15. As you can see, when you do it that way, it's not sparse anymore. There's just a small number of gaps. 
-
-This is something that we can now build a model with. How can we build a model? What we want to do is we want to create something which can predict for user 293, will they like movie 49, for example. So we've got to come up with some function that can represent that decision. 
-
-Here's a simple possible approach. We're going to take this idea of doing some matrix multiplications. So I've created here a random matrix. So here's one matrix of random numbers (the left). And I've created here another matrix of random numbers (the top). More specifically, for each movie, I've created five random numbers, and for each user, I've created five random numbers.
+Here's a simple possible approach. We're going to take this idea of doing some matrix multiplications. Here's one matrix of random numbers (the left) and another matrix of random numbers (the top). More specifically, for each movie, I've created five random numbers, and for each user, I've created five random numbers.
 
 ![](lesson4/8.png)
 
-So we could say, then, that user 14, movie 27; did they like it or not? Well, the rating, what we could do would be to multiply together this vector (red) and that vector (purple). We could do a dot product, and here's the dot product. Then we can basically do that for every possible thing in here. And thanks to spreadsheets, we can just do that in one place and copy it over, and it fills in the whole thing for us. Why would we do it this way? Well, this is the basic starting point of a neural net, isn't it? A basic starting point of a neural net is that you take the matrix multiplication of two matrices, and that's what your first layer always is. So we just have to come up with some way of saying what are two matrices that we can multiply. Clearly, you need a vector for a user (a matrix for all the users) and a vector for a movie (a matrix for all the movies) and multiply them together, and you get some numbers. So they don't mean anything yet. They're just random. But we can now use gradient descent to try to make these numbers (top) and these numbers (left) give us results that are closer to what we wanted. 
+Did user 14 like movie 27? We could multiply together the red vector and the purple vector to get a dot product. Then we can do that for every possible thing in here.This is the basic starting point of a neural net, you take the matrix multiplication of two matrices, and that's what your first layer always is. We can now use gradient descent to try to make these numbers (top) and these numbers (left) give us results that are closer to what we wanted. 
 
-So how do we do that? Well, we set this up now as a linear model, so the next thing we need is a loss function. We can calculate our loss function by saying well okay movie 27 for user ID 14 should have been a rating of 3. With this random matrices, it's actually a rating of 0.91, so we can find the sum of squared errors would be <img src="https://latex.codecogs.com/gif.latex?(3-0.91)^{2}" title="(3-0.91)^{2}" /> and then we can add them up. So there's actually a sum squared in Excel already sum X minus y squared (`SUMXMY2`), so we can use just sum X minus y squared function, passing in those two ranges and then divide by the count to get the mean. 
+The next thing we need is a loss function. Movie 27 for user ID 14 should have been a rating of 3. With this random matrices, it's actually a rating of 0.91. So we can find the sum of squared errors <img src="https://latex.codecogs.com/gif.latex?(3-0.91)^{2}" title="(3-0.91)^{2}" /> and then we can add them up. So there's actually a sum squared in Excel already sum X minus y squared (`SUMXMY2`), so we can use just sum X minus y squared function, passing in those two ranges and then divide by the count to get the mean. 
 
 ![](lesson4/9.png)
 
-Here is a number that is the square root of the mean squared error. You sometimes you'll see people talk about MSE so that's the Mean Squared Error, sometimes you'll see RMSE that's the Root Mean Squared Error. Since I've got a square root at the front, this is the square root mean square error.
 
 #### Excel Solver [[1:14:30](https://youtu.be/C9UdVPE3ynA?t=4470)]
 
-We have a loss, so now all we need to do is use gradient descent to try to modify our weight matrices to make that loss smaller. Excel will do that for me. 
-
-If you don't have solver, go to Excel Options → Add-ins, and enable "Solver Add-in".
-
-The gradient descent solver in Excel is called "Solver" and it just does normal gradient descent. You just go Data → Solver (you need to make sure that in your settings that you've enabled the solver extension which comes with Excel) and all you need to do is say which cell represents my loss function. So there it is, cell V41. Which cells contain your variables, and so you can see here, I've got H19 to V23 which is up here, and B25 to F39 which is over there, then you can just say "okay, set your loss function to a minimum by changing those cells" and click on Solve: 
+We have a loss, now we need to use gradient descent to try to modify our weight matrices to make that loss smaller. If you don't have solver, go to Excel Options → Add-ins, and enable "Solver Add-in". The gradient descent solver in Excel is called "Solver" and it just does normal gradient descent. You just go Data → Solver (you need to make sure that in your settings that you've enabled the solver extension which comes with Excel) and all you need to do is say which cell represents my loss function. So there it is, cell V41. The cells containing your variables are H19 to V23, and B25 to F39. You can say "okay, set your loss function to a minimum by changing those cells" and click on Solve: 
 
 ![](lesson4/10.png)
 
-You'll see the starts a 2.81, and you can see the numbers going down. And all that's doing is using gradient descent exactly the same way that we did when we did it manually in the notebook the other day. But it's rather than solving the mean squared error for `a@x`  in Python, instead it is solving the loss function here which is the mean squared error of the dot product of each of those vectors by each of these vectors.
+You'll see it starts at 2.81, then going down. And all that's doing is using gradient descent exactly the same way that we did when we did it manually in the notebook the other day. But it's rather than solving the mean squared error for `a@x`  in Python, instead it is solving the loss function here which is the mean squared error of the dot product of each of those vectors by each of these vectors.
 
-We'll let that run for a little while and see what happens. But basically in micro, here is a simple way of creating a neural network which is really in this case, it's like just a single linear layer with gradient descent to solve a collaborative filtering problem.
 
 Back to the [notebook](https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson4-collab.ipynb) [[1:17:02](https://youtu.be/C9UdVPE3ynA?t=4622)]
 
-Let's go back and see what we do over here. 
 
 ```python
 data = CollabDataBunch.from_df(ratings, seed=42)
@@ -906,20 +833,7 @@ epoch  train_loss  valid_loss
 3      0.660136    0.666290    (00:01)
 ```
 
-So over here we used `collab_learner` to get a model. So the the function that was called in the notebook was `collab_learner` and as you dig deeper into deep learning, one of the really good ways to dig deeper into deep learning is to dig into the fastai source code and see what's going on. So if you're going to be able to do that, you need to know how to use your editor well enough to dig through the source code. Basically there are two main things you need to know how to do:
-
-1. Jump to a particular "symbol", like a particular class or function by its name
-2. When you're looking at a particular symbol, to be able to jump to its implementation
-
-For example in this case, I want to find `def collab_learner`. In most editors including the one I use, vim, you can set it up so that you can hit tab or something and it jumps through all the possible completions, and you can hit enter and it jumps straight to the definition for you. So here is the definition of `collab_learner`. As you can see, it's pretty small as these things tend to be, and the key thing it does is to create model of a particular kind which is an `EmbeddingDotBias` model passing in the various things you asked for. So you want to find out in your editor how you jump to the definition of that, which in vim you just hit <kbd>Ctrl</kbd>+<kbd>]</kbd>  and here is the definition of `EmbeddingDotBias`. 
-
-![](lesson4/11.png)
-
-Now we have everything on screen at once, and as you can see there's not much going on. The models that are being created for you by fastai are actually PyTorch models. And a PyTorch model is called an `nn.Module` that's the name in PyTorch of their models. It's a little more nuanced than that, but that's a good starting point for now. When a PyTorch `nn.Module`  is run (when you calculate the result of that layer, neural net, etc), specifically, it always calls a method for you called `forward`. So it's in here that you get to find out how this thing is actually calculated. 
-
-When the model is built at the start, it calls this thing called `__init__` as we've briefly mentioned before in Python people tend to call this "dunder init". So dunder init is how we create the model, and forward is how we run the model.
-
-One thing if you're watching carefully, you might notice is there's nothing here saying how to calculate the gradients of the model, and that's because PyTorch does it for us. So you only have to tell it how to calculate the output of your model, and PyTorch will go ahead and calculate the gradients for you.
+So over here we used `collab_learner` to get a model.
 
 So in this case, the model contains:
 
@@ -934,21 +848,15 @@ And each one of those is coming from this thing called `embedding`. Here is the 
 
 
 
-All it does is it calls this PyTorch thing called `nn.Embedding`. In PyTorch, they have a lot of standard neural network layers set up for you. So it creates an embedding. And then this thing here (`trunc_normal_`) is it just randomizes it. This is something which creates normal random numbers for the embedding.
-
-
-
-#### Embedding [[1:21:41](https://youtu.be/C9UdVPE3ynA?t=4901)]
-
-So what's an embedding? An embedding, not surprisingly, is a matrix of weights. Specifically, an embedding is a matrix of weights that looks something like this:
+All it does is it calls this PyTorch thing called `nn.Embedding`. An embedding is a matrix of weights that looks something like this:
 
 ![](lesson4/13.png)
 
-It's a matrix of weights which you can basically look up into, and grab one item out of it. So basically an embedding matrix is just a weight matrix that is designed to be something that you index into it as an array, and grab one vector out of it. That's what an embedding matrix is. In our case, we have an embedding matrix for a user and an embedding matrix for a movie. And here, we have been taking the dot product of them:
+It's a matrix of weights which you can look up into, and grab one item out of it. You index into it as an array, and grab one vector out of it.In our case, we have an embedding matrix for a user and an embedding matrix for a movie. And here, we have been taking the dot product of them:
 
 ![](lesson4/14.png)
 
-But if you think about it, that's not quite enough. Because we're missing this idea that maybe there are certain movies that everybody likes more. Maybe there are some users that just tend to like movies more. So I don't really just want to multiply these two vectors together, but I really want to add a single number of like how popular is this movie, and add a single number of like how much does this user like movies in general. So those are called "bias" terms. Remember how I said there's this idea of bias and the way we dealt with that in our gradient descent notebook was we added a column of 1's. But what we tend to do in practice is we actually explicitly say I want to add a bias term. So we don't just want to have prediction equals dot product of these two things, we want to say it's the dot product of those two things plus a bias term for a movie plus a bias term for user ID.
+But if you think about it, that's not quite enough. Maybe there are certain movies that everybody likes more. Maybe there are some users that just tend to like movies more. So I  want to add a single number of how popular is this movie, and add a single number of how much does this user like movies in general. Those are called "bias" terms. Remember how I said there's this idea of bias and the way we dealt with that in our gradient descent notebook was we added a column of 1's. But what we tend to do in practice is we actually explicitly say I want to add a bias term. So we don't just want to have prediction equals dot product of these two things, we want to say it's the dot product of those two things plus a bias term for a movie plus a bias term for user ID.
 
 #### Back to code [[1:23:55](https://youtu.be/C9UdVPE3ynA?t=5035)]
 
@@ -956,13 +864,13 @@ So that's basically what happens. We when we set up the model, we set up the emb
 
 ![](lesson4/15.png)
 
-Then when we calculate the model, we literally just multiply the two together. Just like we did. We just take that product, we call it `dot`. Then we add the bias, and (putting aside `y_range` for a moment) that's what we return. So you can see that our model is literally doing what we did in the spreadsheet with the tweak that we're also adding the bias. So it's an incredibly simple linear model. For these kinds of collaborative filtering problems, this kind of simple linear model actually tends to work pretty well.
+When we calculate the model, we just multiply the two together. We take the dot product, add the bias, and (putting aside `y_range` for a moment) that's what we return. So you can see that our model is literally doing what we did in the spreadsheet with the tweak that we're also adding the bias. For these kinds of collaborative filtering problems, this kind of simple linear model tends to work pretty well.
 
-Then there's one tweak that we do at the end which is that in our case we said that there's y range of between 0 and 5.5. So here's something to point out. So you do that dot product and you add on the two biases and that could give you any possible number along the number line from very negative through to very positive numbers. But we know that we always want to end up with a number between zero and five. What if we mapped that number line like so, to this function. The shape of that function is called a sigmoid. And so, it's gonna asymptote to five and it's gonna asymptote to zero. 
+Then there's one tweak that we do at the end which is that in our case we said that there's y range of between 0 and 5.5. So here's something to point out. So you do that dot product and you add on the two biases and that could give you any possible number along the number line from very negative through to very positive numbers. But we know that we always want to end up with a number between zero and five. What if we mapped that number line to this function. The shape of that function is called a sigmoid. And so, it's gonna asymptote to five and zero. 
 
 ![](lesson4/16.png)
 
-That way, whatever number comes out of our dot product and adding the biases, if we then stick it through this function, it's never going to be higher than 5 and never going to be smaller than 0. Now strictly speaking, that's not necessary. Because our parameters could learn a set of weights that gives about the right number. So why would we do this extra thing if it's not necessary? The reason is, we want to make its life as easy for our model as possible. If we actually set it up so it's impossible for it to ever predict too much or too little, then it can spend more of its weights predicting the thing we care about which is deciding who's going to like what movie. So this is an idea we're going to keep coming back to when it comes to like making neural network's work better. It's about all these little decisions that we make to basically make it easier for the network to learn the right thing. So that's the last tweak here:
+Whatever number comes out of our dot product, we add the biases, then stick it through this function, it's never going to be higher than 5 and never going to be smaller than 0. 
 
 ```python
 return torch.sigmoid(res) * (self.y_range[1]-self.y_range[0]) + self.y_range[0]
@@ -970,13 +878,10 @@ return torch.sigmoid(res) * (self.y_range[1]-self.y_range[0]) + self.y_range[0]
 
 We take the result of this dot product plus biases, we put it through a sigmoid. A sigmoid is just a function which is basically<img src="https://latex.codecogs.com/gif.latex?\frac{1}{1&plus;e^{-x}}" title="\frac{1}{1+e^{-x}}" />, but the definition doesn't much matter. But it just has the shape that I just mentioned, and that goes between 0 and 1. If you then multiply that by `y_range[1]` minus `y_range[0]` plus `y_range[0]`, then that's going to give you something that's between `y_range[0]` and `y_range[1]`. 
 
-So that means that this tiny little neural network, I mean it's a push to call it a neural network. But it is a neural network with one weight matrix and no nonlinearities. So it's kind of the world's most boring neural network with a sigmoid at the end.  I guess it does have a non-linearity. The sigmoid at the end is the non-linearity, it only has one layer of weights. That actually turns out to give close to state-of-the-art performance. I've looked up online to find out like what are the best results people have on this MovieLens 100k database, and the results I get from this little thing is better than any of the results I can find from the standard commercial products that you can download that are specialized for this. And the trick seems to be that adding this little sigmoid makes a big difference.
+The sigmoid at the end is a non-linearity, it only has one layer of weights. That actually turns out to give close to state-of-the-art performance. I've looked up online to find out like what are the best results people have on this MovieLens 100k database, and the results I get from this little thing is better than any of the results I can find from the standard commercial products that you can download that are specialized for this. And the trick seems to be that adding this little sigmoid makes a big difference.
 
 [[1:29:09](https://youtu.be/C9UdVPE3ynA?t=5349)]
 
-**Question**:  There was a question about how you set up your vim, and I've already linked to your [.vimrc](https://github.com/fastai/dotfiles/blob/master/.vimrc)  but I wanted know if you had more to say about. They really like your setup 🙂
-
-You like my setup? There's almost nothing in my setup. It's pretty bare honestly. I mean whatever you're doing with your editor, you probably want it to look like this which is when you've got a class that you're not currently working on it should be this is called folded/folding﹣it should be closed up so you can't see it. So you basically want something where it's easy to close and open folds, so vim already does all this for you. Then as I mentioned, you also want something where you can jump to the definition of things which in vim called using tags (e.g. to jump to the definition of `Learner`, position the cursor over `Learner` and hit <kbd>Ctrl</kbd>+<kbd>]</kbd>). Basically vim already does all this for you. You just have to read instructions. My .vimrc is minimal. I basically hardly use any extensions or anything. Another great editor to use is a [Visual Studio Code](https://code.visualstudio.com/). It's free and it's awesome and it has all the same features that you're seeing that vim does, basically VS Sode does all of those things as well. I quite like using vim because I can use it on the remote machine and play around, but you can of course just clone the git repo into your local computer and open it up with VS Code to play around with. Just don't try and look through the code just on github or something. That's going to drive you crazy. You need to be able to open it and close it and jump and jump back. Maybe people can create some threads on the forum for vim tips, VS Code tips, Sublime tips, whatever. For me, I would if you're gonna pick an editor, if you want to use something on your local, I would go with the VS Code today. I think it's the best. If you want to use something on the terminal side, I would go with VIM or Emacs, to me they're clear winners.
 
 ### Overview of important terminology [[1:31:24](https://youtu.be/C9UdVPE3ynA?t=5484)]
 
@@ -996,7 +901,7 @@ So what I wanted to close with today is, to take this collaborative filtering ex
   - Layer deletion and random weights
   - Freezing & unfreezing
 
-Let's think about what happens when you're using a neural network to do image recognition. Let's take a single pixel. You've got lots of pixels, but let's take a single pixel. So you've got a red a green and a blue pixel. Each one of those is some number between 0 and 255, or we normalize them so they have the mean of zero and standard deviation of one. But let's just do 0 to 255 version. So red: 10, green: 20, blue 30. So what do we do with these? Well, what we do is we basically treat that as a vector, and we multiply it by a matrix. So this matrix (depending on how you think of the rows and the columns), let's treat the matrix is having three rows and then how many columns? You get to pick. Just like with the collaborative filtering version, I decided to pick a vector of size five for each of my embedding vectors. So that would mean that's an embedding of size 5. You get to pick how big your weight matrix is. So let's make it size 5. This is 3 by 5.
+Let's think about what happens when you're using a neural network to do image recognition. Let's take a single pixel. So you've got a red a green and a blue pixel. Each one of those is some number between 0 and 255, so red: 10, green: 20, blue 30. We basically treat that as a vector, and we multiply it by a matrix. So this matrix (depending on how you think of the rows and the columns), let's treat the matrix is having three rows and then how many columns? You get to pick. Just like with the collaborative filtering version, I decided to pick a vector of size five for each of my embedding vectors. So that would mean that's an embedding of size 5. You get to pick how big your weight matrix is. So let's make it size 5. This is 3 by 5.
 
 Initially, this weight matrix contains random numbers. Remember we looked at `embedding` weight matrix just now?
 
@@ -1020,29 +925,19 @@ Let's say we're doing digit recognition. There are ten possible digits, so my la
 
 So what happens is our neural net runs along starting with our input, and going weight matrix→ReLU→ weight matrix→ReLU→ weight matrix→ final output. Then we compare these two together to see how close they are (i.e. how close they match) using some loss function and we'll learn about all the loss functions that we use next week. For now, the only one we've learned is mean squared error. And we compare the output (you can think of them as probabilities for each of the 10) to the actual each of the 10 to get a loss, and then we find the gradients of every one of the weight matrices with respect to that, and we update the weight matrices.
 
-The main thing I wanted to show right now is the terminology we use because it's really important. 
+The yellow matrices contain random numbers, in PyTorch they're called parameters. Sometimes we'll refer to them as weights, although weights is slightly less accurate because they can also be biases.  
 
-These things (yellow) contain numbers. Specifically they initially are matrices containing random numbers. And we can refer to these yellow things, in PyTouch, they're called parameters. Sometimes we'll refer to them as weights, although weights is slightly less accurate because they can also be biases. But we kind of use the terms a little bit interchangeably. Strictly speaking, we should call them parameters.
-
-Then after each of those matrix products, that calculates a vector of numbers. Here are some numbers (blue) that are calculated by a weight matrix multiply. And then there's some other set of numbers (purple) that are calculated as a result of a ReLU as well as the activation function. Either one is called activations.
+Then after each of those matrix products, that calculates a vector of numbers. The blue numbers are calculated by a weight matrix multiply. The purple numbers are calculated as a result of a ReLU as well as the activation function. Either one is called activations.
 
 ![](lesson4/18.png)
 
-Activations and parameters, both refer to numbers. They are numbers. But **Parameters** are numbers that are stored, they are used to make a calculation. **Activations** are the result of a calculation﹣the numbers that are calculated. So they're the two key things you need to remember. 
-
-So use these terms, and use them correctly and accurately. And if you read these terms, they mean these very specific things. So don't mix them up in your head. And remember, they're nothing weird and magical﹣they are very simple things. 
 
 - An activation is the result of either a matrix multiply or an activation function. 
 - Parameters are the numbers inside the matrices that we multiply by.
 
-That's it. Then there are some special layers. Every one of these things that does a calculation, all of these things that does a calculation (red arrow), are all called layers. They're the layers of our neural net. So every layer results in a set of activations because there's a calculation that results in a set of results.
+All of these things that does a calculation (red arrow), are all called layers. Every layer results in a set of activations because there's a calculation.
 
 ![](lesson4/19.png)
 
-There's a special layer at the start which is called the input layer, and then at the end you just have a set of activations and we can refer to those special numbers (I mean they're not special mathematically but they're semantically special); we can call those the outputs. The important point to realize here is the outputs of a neural net are not actually mathematically special, they're just the activations of a layer. 
 
-So what we did in our collaborative filtering example, we did something interesting. We actually added an additional activation function right at the very end. We added an extra activation function which was sigmoid, specifically it was a scaled sigmoid which goes between 0 and 5. It's very common to have an activation function as your last layer, and it's almost never going to be a ReLU because it's very unlikely that what you actually want is something that truncates at zero. It's very often going to be a sigmoid or something similar because it's very likely that actually what you want is something that's between two values and kind of scaled in that way.
 
-So that's nearly it. Inputs, weights, activations, activation functions (which we sometimes call nonlinearities), output, and then the function that compares those two things together is called the loss function, which so far we've used MSE.
-
-That's enough for today. So what we're going to do next week is we're going to kind of add in a few more extra bits which is we're going to learn the loss function that's used for classification called **cross-entropy**, we're going to use the activation function that's used for single label classification called **softmax**, and we're also going to learn exactly what happens when we do fine-tuning in terms of how these layers actually, what happens with unfreeze, and what happens when we create transfer learning. Thanks everybody! Looking forward to seeing you next week.

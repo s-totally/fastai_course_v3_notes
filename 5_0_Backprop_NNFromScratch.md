@@ -22,7 +22,7 @@ The yellow things are our weight matrices/tensors. We take some input activation
 
 Activations don't only come out of matrix multiplications, they also come out of activation functions, which are element-wise functions. They are applied to each element of the input, activations in turn, and creates one activation for each input element. So if it starts with a 20 long vector it creates a 20 long vector. ReLU is the main one we've looked at, it doesn't matter too much which you pick. If you just use ReLU, you'll get a pretty good answer most of the time.
 
-Then we learnt that this combination of matrix multiplications followed by ReLUs stack together has this amazing mathematical property called the universal approximation theorem. If you have big enough weight matrices and enough of them, it can solve any arbitrarily complex mathematical function to any arbitrarily high level of accuracy (assuming that you can train the parameters, both in terms of time and data availability and so forth). That's the bit which I find particularly more advanced computer scientists get really confused about. They're always asking where's the next bit? What's the trick? How does it work? But that's it. You just do those things, and you pass back the gradients, and you update the weights with the learning rate.
+Then we learnt that this combination of matrix multiplications followed by ReLUs stack together has this amazing mathematical property called the universal approximation theorem. If you have big enough weight matrices and enough of them, it can solve any arbitrarily complex mathematical function to any arbitrarily high level of accuracy (assuming that you can train the parameters, both in terms of time and data availability and so forth).
 
 Then we take the loss function between the actual targets and the output of the final layer (i.e. the final activations), we calculate the gradients with respect to all of the weights, and then we update those weights by subtracting learning rate times the gradient. That process of calculating those gradients and then subtracting  is called **back propagation**. Back propagation sounds very impressive but  you can replace it in your head with `weights ﹣= weight.grad * learning rate` or parameters, rather than weights (a bit more general). 
 
@@ -32,17 +32,16 @@ Let's talk about fine-tuning. So what happens when we take a ResNet 34 and we do
 
 ![](lesson5/1.png)
 
-Why is that? Because the problem they asked you to solve in the ImageNet competition is please figure out which one of these 1000 image categories this picture is. So that's why they need a 1000 things here because in ImageNet, this target vector  is length 1000. You've got to pick the probability that it's which one of those thousand things.
+Why is that? Because the problem they asked you to solve in the ImageNet competition is to figure out which one of these 1000 image categories this picture is. So that's why they need a 1000 things because in ImageNet, this target vector  is length 1000. You've got to pick the probability it's one of those thousand things.
 
-There's a couple of reasons this weight matrix is no good to you when you're doing transfer learning. The first is that you probably don't have a thousand categories. I was trying to do teddy bears, black bears, or brown bears. So I don't want a thousand categories. The second is even if I did have exactly a thousand categories, they're not the same thousand categories that are in ImageNet. So basically this whole weight matrix is a waste of time for me. So what do we do? We throw it away. When you go create_cnn in fastai, it deletes that. And what does it do instead? Instead, it puts in two new weight matrices in there for you with a ReLU in between.
+There's a couple of reasons this weight matrix is no good to you when you're doing transfer learning. The first is that you probably don't have a thousand categories. The second is even if I did have exactly a thousand categories, they're not the same thousand categories that are in ImageNet. So basically this whole weight matrix is a waste of time for me. So what do we do? We throw it away. When you go create_cnn in fastai, it deletes that. And what does it do instead? Instead, it puts in two new weight matrices in there for you with a ReLU in between.
 
 ![](lesson5/2.png)
 
 There are some defaults as to what size this first one is, but the second one the size there is as big as you need it to be. So in your data bunch which you passed to your learner, from that we know how many activations you need. If you're doing classification, it's how many ever classes you have, if you're doing regression it's how many ever numbers you're trying to predict in the regression problem. So remember, if your data bunch is called `data` that'll be called `data.c`. So we'll add for you this weight matrix of size `data.c` by however much was in the previous layer.
 
-[[11:08](https://youtu.be/uQtTwhpv7Ew?t=668)]
 
-Okay so now we need to train those because initially these weight matrices are full of random numbers. Because new weight matrices are always full of random numbers if they are new. And these ones are new. We're just we've grabbed them and thrown them in there, so we need to train them. But the other layers are not new. The other layers are good at something. What are they good at? Let's remember that [Zeiler and Fergus paper](https://arxiv.org/pdf/1311.2901.pdf). Here are examples of some visualization of some filters some some weight matrices in the first layer and some examples of some things that they found.
+Okay so now we need to train those because initially these weight matrices are full of random numbers. We're just we've grabbed them and thrown them in there, so we need to train them. But the other layers are not new. The other layers are good at something. What are they good at? Let's remember that [Zeiler and Fergus paper](https://arxiv.org/pdf/1311.2901.pdf). Here are examples of some visualization of some filters some some weight matrices in the first layer and some examples of some things that they found.
 
 ![](lesson5/3.png)
 
@@ -56,11 +55,11 @@ And then in layer 2, one of the filters was good at finding corners in the top l
 
 Then in layer 3 one of the filters was good at finding repeating patterns, another one was good at finding round orange things, another one was good at finding kind of like hairy or floral textures.
 
-So as we go up, they're becoming more sophisticated, but also more specific. So like layer 4, I think, was finding like eyeballs, for instance. Now if you're wanting to transfer and learn to something for histopathology slides, there's probably going to be no eyeballs in that, right? So the later layers are no good for you. But there'll certainly be some repeating patterns and diagonal edges. So the earlier you go in the model, the more likely it is that you want those weights to stay as they are.
+So as we go up, they're becoming more sophisticated, but also more specific. So like layer 4, I think, was finding like eyeballs, for instance. Now if you're wanting to transfer and learn to something for histopathology slides, there's probably going to be no eyeballs in that. So the later layers are no good for you. But there'll certainly be some repeating patterns and diagonal edges. So the earlier you go in the model, the more likely it is that you want those weights to stay as they are.
 
 ### Freezing layers [[13:00](https://youtu.be/uQtTwhpv7Ew?t=780)]
 
-To start with, we definitely need to train these new weights because they're random. So let's not bother training any of the other weights at all to start with. So what we do is we basically say let's freeze. 
+To start with, we definitely need to train these new weights because they're random. So let's not bother training any of the other weights at all to start with. 
 
 ![](lesson5/6.png)
 
@@ -68,27 +67,23 @@ Let's freeze all of those other layers. So what does that mean? All that means i
 
 So it'll be a little bit faster as well because there's a few less calculations to do. It'll take up a little bit less memory because there's a few less gradients that we have to store. But most importantly it's not going to change weights that are already better than nothing - they're better than random at the very least.
 
-So that's what happens when you call freeze. It doesn't freeze the whole thing. It freezes everything except the randomly generated added layers that we put on for you.
+So that's what happens when you call freeze. It freezes everything except the randomly generated added layers that we put on for you.
 
 #### Unfreezing and Using Discriminative Learning Rates
 
-Then what happens next? After a while we say "okay this is looking pretty good. We probably should train the rest of the network now". So we unfreeze. Now we're gonna chain the whole thing, but we still have a pretty good sense that these new layers we added to the end probably need more training, and these ones right at the start (e.g. diagonal edges) probably don't need much training at all. So we split our our model into a few sections. And we say "let's give different parts of the model different learning rates." So the earlier part of the model, we might give a learning rate of `1e- 5`, and the later part of the model we might give a learning rate of `1e-3`, for example. 
+After a while we say "okay this is looking pretty good. We probably should train the rest of the network now". So we unfreeze. Now we're gonna chain the whole thing, but we still have a pretty good sense that these new layers we added to the end probably need more training, and these ones right at the start (e.g. diagonal edges) probably don't need much training at all. So we split our our model into a few sections and say "let's give different parts of the model different learning rates." So the earlier part of the model, we might give a learning rate of `1e- 5`, and the later part of the model we might give a learning rate of `1e-3`, for example. 
 
-So what's gonna happen now is that we can keep training the entire network. But because the learning rate for the early layers is smaller, it's going to move them around less because we think they're already pretty good and also if it's already pretty good to the optimal value, if you used a higher learning rate, it could kick it out - it could actually make it worse which we really don't want to happen. So this this process is called using **discriminative learning rates**. You won't find much online about it because I think we were kind of the first to use it for this purpose (or at least talked about it extensively. Maybe other probably other people used it without writing it down). So most of the stuff you'll find about this will be fastai students. But it's starting to get more well-known slowly now. It's a really really important concept. For transfer learning, without using this, you just can't get nearly as good results.
+So what's gonna happen now is that we can keep training the entire network. But because the learning rate for the early layers is smaller, it's going to move them around less because we think they're already pretty good and also if it's already pretty good to the optimal value, if you used a higher learning rate, it could kick it out - it could actually make it worse which we really don't want to happen. So this this process is called using **discriminative learning rates**. 
 
 How do we do discriminative learning rates in fastai? Anywhere you can put a learning rate in fastai such as with the `fit` function. The first thing you put in is the number of epochs and then the second thing you put in is learning rate (the same if you use `fit_one_cycle`). The learning rate, you can put a number of things there:
 
 - You can put a single number (e.g. `1e-3`):  Every layer gets the same learning rate. So you're not using discriminative learning rates. 
-- You can write a slice. So you can write slice with a single number (e.g. `slice(1e-3)`): The final layers get a learning rate of whatever you wrote down (`1e-3`), and then all the other layers get the same learning rate which is that divided by 3. So all of the other layers will be `1e-3/3`. The last layers will be `1e-3`. 
+- You can write a slice with a single number (e.g. `slice(1e-3)`): The final layers get a learning rate of whatever you wrote down (`1e-3`), and then all the other layers get the same learning rate which is that divided by 3. So all of the other layers will be `1e-3/3`. The last layers will be `1e-3`. 
 - You can write slice with two numbers (e.g. `slice(1e-5, 1e-3)`). The final layers (these randomly added layers) will still be again `1e-3`. The first layers will get `1e-5`, and the other layers will get learning rates that are equally spread between those two - so multiplicatively equal. If there were three layers, there would be `1e-5`, `1e-4`, `1e-3`, so equal multiples each time.
 
-One slight tweak - to make things a little bit simpler to manage, we don't actually give a different learning rate to every layer. We give a different learning rate to every "layer group" which is just we decided to put the groups together for you. Specifically what we do is, the randomly added extra layers we call those one layer group. This is by default. You can modify it. Then all the rest, we split in half into two layer groups. 
+To make things a little bit simpler to manage, we don't actually give a different learning rate to every layer. We give a different learning rate to every "layer group" which is just we decided to put the groups together for you. Specifically what we do is, the randomly added extra layers we call those one layer group. This is by default. You can modify it. Then all the rest, we split in half into two layer groups. 
 
-By default (at least with a CNN), you'll get three layer groups. If you say `slice(1e-5, 1e-3)`, you will get `1e-5` learning rate for the first layer group, `1e-4` for the second, `1e-3` for the third. So now if you go back and look at the way that we're training, hopefully you'll see that this makes a lot of sense.
-
-This divided by three thing, it's a little weird and we won't talk about why that is until part two of the course. It's a specific quirk around batch normalization. So we can discuss that in the advanced topic if anybody's interested.
-
-That is fine tuning. Hopefully that makes that a little bit less mysterious. 
+By default (at least with a CNN), you'll get three layer groups. If you say `slice(1e-5, 1e-3)`, you will get `1e-5` learning rate for the first layer group, `1e-4` for the second, `1e-3` for the third.
 
 [[19:49](https://youtu.be/uQtTwhpv7Ew?t=1189)]
 
@@ -96,11 +91,11 @@ So we were looking at collaborative filtering last week.
 
 ![](lesson5/7.png)
 
-And in the collaborative filtering example, we called `fit_one_cycle` and we passed in just a single number. That makes sense because in collaborative filtering, we only have one layer. There's a few different pieces in it, but there isn't a matrix multiply followed by an activation function followed by another matrix multiply.
+We called `fit_one_cycle` and we passed in just a single number. That makes sense because in collaborative filtering, we only have one layer. There's a few different pieces in it, but there isn't a matrix multiply followed by an activation function followed by another matrix multiply.
 
 #### Affine Function [[20:24](https://youtu.be/uQtTwhpv7Ew?t=1224)]
 
-I'm going to introduce another piece of jargon here. They're not always exactly matrix multiplications. There's something very similar. They're linear functions that we add together, but the more general term for these things that are more general than matrix multiplications is **affine functions**. So if you hear me say the word affine function, you can replace it in your head with matrix multiplication. But as we'll see when we do convolutions, convolutions are matrix multiplications where some of the weights are tied. So it would be slightly more accurate to call them affine functions. And I'd like to introduce a little bit more jargon in each lesson so that when you read books or papers or watch other courses or read documentation, there will be more of the words you recognize. So when you see affine function, it just means a linear function. It means something very very close to matrix multiplication. And matrix multiplication is the most common kind of affine function, at least in deep learning.
+I'm going to introduce another piece of jargon here. They're linear functions that we add together, but the more general term for these things that are more general than matrix multiplications is **affine functions**. It just means a linear function, very close to matrix multiplication. And matrix multiplication is the most common kind of affine function, at least in deep learning.
 
 Specifically for collaborative filtering, the model we were using was this one:
 
@@ -116,9 +111,7 @@ Then I started to talk about this idea of embedding matrices. In order to unders
 
 ![](lesson5/8.png)
 
-Here's another worksheet. What I've done here is I have copied over those two weight matrices from the previous worksheet. Here's the one for users, and here's the one for movies. And the movies one I've transposed it, so it's now got exactly the same dimensions as the users one. 
-
-So here are two weight matrices (in orange). Initially they were random. We can train them with gradient descent. In the original data, the user IDs and movie IDs were numbers like these. To make life more convenient, I've converted them to numbers from 1 to 15 (`user_idx` and `movie_idx`). So in these columns, for every rating, I've got user ID movie ID rating using these mapped numbers so that they're contiguous starting at one.
+Here's another worksheet. What I've done here is I have copied over those two weight matrices from the previous worksheet. Here's the one for users, and here's the one for movies. Initially they were random. We can train them with gradient descent. In the original data, the user IDs and movie IDs were numbers like these. I've converted them to numbers from 1 to 15 (`user_idx` and `movie_idx`). So in these columns, for every rating, I've got user ID movie ID rating using these mapped numbers so that they're contiguous starting at one.
 
 Now I'm going to replace user ID number 1 with this vector - the vector contains a 1 followed by 14 zeros. Then user number 2, I'm going to replace with a vector of 0 and then 1 and then 13 zeros. So movie ID 14, I've also replaced with another vector which is 13 zeros and then a 1 and then a 0. These are called one-hot encodings, by the way. This is not part of a neural net. This is just like some input pre-processing where I'm literally making this my new input:
 
@@ -130,7 +123,7 @@ What I'm going to do now is I'm going to take this input matrix and I'm going to
 
 Here (User activations) is the matrix product of this input matrix of inputs, and this parameter matrix or weight matrix. So that's just a normal neural network layer. It's just a regular matrix multiply. So we can do the same thing for movies, and so here's the matrix multiply for movies.
 
-Well, here's the thing. This input, we claim, is this one hot encoded version of user ID number 1, and these activations are the activations for user ID number one. Why is that? Because if you think about it, the matrix multiplication between a one hot encoded vector and some matrix is actually going to find the Nth row of that matrix when the one is in position N. So what we've done here is we've actually got a matrix multiply that is creating these output activations. But it's doing it in a very interesting way - it's effectively finding a particular row in the input matrix.
+This input, we claim, is this one hot encoded version of user ID number 1, and these activations are the activations for user ID number one. Why is that? Because if you think about it, the matrix multiplication between a one hot encoded vector and some matrix is actually going to find the Nth row of that matrix when the one is in position N. So what we've done here is we've actually got a matrix multiply that is creating these output activations. But it's doing it in a very interesting way - it's effectively finding a particular row in the input matrix.
 
 Having done that, we can then multiply those two sets together (just a dot product), and we can then find the loss squared, and then we can find the average loss. 
 
@@ -158,7 +151,7 @@ Now suddenly it's as if we have another whole kind of layer. It's a kind of laye
 
 So this is really important. Because when you hear people say embedding, you need to replace it in your head with "an array lookup" which we know is mathematically identical to matrix multiply by a one hot encoded matrix. 
 
-Here's the thing though, it has kind of interesting semantics. Because when you do multiply something by a one hot encoded matrix, you get this nice feature where the rows of your weight matrix, the values only appear (for row number one, for example) where you get user ID number one in your inputs. So in other words you kind of end up with this weight matrix where certain rows of weights correspond to certain values of your input. And that's pretty interesting. It's particularly interesting here because (going back to a kind of most convenient way to look at this) because the only way that we can calculate an output activation is by doing a dot product of these two input vectors. That means that they kind of have to correspond with each other. There has to be some way of saying if this number for a user is high and this number for a movie is high, then the user will like the movie. So the only way that can possibly make sense is if **these numbers represent features of personal taste and corresponding features of movies**. For example, the movie has John Travolta in it and user ID likes John Travolta, then you'll like this movie. 
+When you multiply something by a one hot encoded matrix, you get this nice feature where the rows of your weight matrix, the values only appear (for row number one, for example) where you get user ID number one in your inputs. So in other words you kind of end up with this weight matrix where certain rows of weights correspond to certain values of your input. And that's pretty interesting. It's particularly interesting here because (going back to a kind of most convenient way to look at this) because the only way that we can calculate an output activation is by doing a dot product of these two input vectors. That means that they kind of have to correspond with each other. There has to be some way of saying if this number for a user is high and this number for a movie is high, then the user will like the movie. So the only way that can possibly make sense is if **these numbers represent features of personal taste and corresponding features of movies**. For example, the movie has John Travolta in it and user ID likes John Travolta, then you'll like this movie. 
 
 We're not actually deciding the rows mean anything. We're not doing anything to make the rows mean anything. But the only way that this gradient descent could possibly come up with a good answer is if it figures out what the aspects of movie taste are and the corresponding features of movies are. So those underlying kind of features that appear that are called **latent factors** or **latent features**. They're these hidden things that were there all along, and once we train this neural net, they suddenly appear.
 
@@ -176,17 +169,6 @@ So what does that do? Well just before I came in today, I ran data solver on thi
 
 So there's all the pieces of this collaborative filtering model.
 
-**Question**: When we load a pre-trained model, can we explore the activation grids to see what they might be good at recognizing? [[36:11](https://youtu.be/uQtTwhpv7Ew?t=2171)]
-
-Yes, you can. And we will learn how to (should be) in the next lesson.
-
-**Question**: Can we have an explanation of what the first argument in `fit_one_cycle` actually represents? Is it equivalent to an epoch?
-
-Yes, the first argument to `fit_one_cycle` or `fit` is number of epochs. In other words, an epoch is looking at every input once. If you do 10 epochs, you're looking at every input ten times. So there's a chance you might start overfitting if you've got lots of lots of parameters and a high learning rate. If you only do one epoch, it's impossible to overfit, and so that's why it's kind of useful to remember how many epochs you're doing.
-
-**Question**: What is an affine function? 
-
-An affine function is a linear function. I don't know if we need much more detail than that. If you're multiplying things together and adding them up, it's an affine function. I'm not going to bother with the exact mathematical definition, partly because I'm a terrible mathematician and partly because it doesn't matter. But if you just remember that you're multiplying things together and then adding them up, that's the most important thing. It's linear. And therefore if you put an affine function on top of an affine function, that's just another affine function. You haven't won anything at all. That's a total waste of time. So you need to sandwich it with any kind of non-linearity pretty much works - including replacing the negatives with zeros which we call ReLU. So if you do affine, ReLU, affine, ReLU, affine, ReLU,  you have a deep neural network.
 
 [[38:25](https://youtu.be/uQtTwhpv7Ew?t=2305)]
 
@@ -353,9 +335,11 @@ The other trick I used is to add something called weight decay, and we're going 
 learn = collab_learner(data, n_factors=40, y_range=y_range, wd=1e-1)
 ```
 
-How many factors do you want or what are factors? The number of factors is the width of the embedding matrix. So why don't we say embedding size? Maybe we should, but in the world of collaborative filtering they don't use that word. They use the word "factors" because of this idea of latent factors, and because the standard way of doing collaborative filtering has been with something called **matrix factorization**. In fact what we just saw happens to actually be a way of doing matrix factorization. So we've actually accidentally learned how to do matrix factorization today. So this is a term that's kind of specific to this domain. But you can just remember it as the width of the embedding matrix.
+How many factors do you want or what are factors? The number of factors is the width of the embedding matrix. So why don't we say embedding size? Maybe we should, but in the world of collaborative filtering they don't use that word. They use the word "factors" because of this idea of latent factors, and because the standard way of doing collaborative filtering has been with something called **matrix factorization**. In fact what we just saw happens to actually be a way of doing matrix factorization. So we've actually accidentally learned how to do matrix factorization today. 
 
-Why 40? Well this is one of these architectural decisions you have to play around with and see what works. So I tried 10, 20, 40, and 80 and I found 40 seems to work pretty well. And it rained really quickly, so you can chuck it in a little for loop to try a few things and see what looks best.
+
+Why 40? Well this is one of these architectural decisions you have to play around with and see what works. So I tried 10, 20, 40, and 80 and I found 40 seems to work pretty well. 
+
 
 ```python
 learn.lr_find()
@@ -364,7 +348,7 @@ learn.recorder.plot(skip_end=15)
 
 ![](lesson5/14.png)
 
-Then for learning rates, here's the learning rate finder as usual.  `5e-3` seemed to work pretty well. Remember this is just a rule of thumb. `5e-3` is a bit lower than both Sylvain's rule and my rule - so Sylvain's rule is find the bottom and go back by ten, so his rule would be more like `2e-2`, I reckon. My rule is kind of find about the steepest section which is about here, which again often it agrees with Sylvain's so that would be about `2e-2`. I tried that and I always like to try like 10 X less and 10x more just to check. And actually I found a bit less was helpful. So the answer to the question like "should I do blah?" is always "try blah and see." Now that's how you actually become a good practitioner.
+Then for learning rates, `5e-3` seemed to work pretty well. Remember this is just a rule of thumb. `5e-3` is a bit lower than both Sylvain's rule and my rule - so Sylvain's rule is find the bottom and go back by ten, so his rule would be more like `2e-2`, I reckon. My rule is kind of find about the steepest section which is about here, which again often it agrees with Sylvain's so that would be about `2e-2`. I tried that and I always like to try like 10 X less and 10x more just to check. And actually I found a bit less was helpful. So the answer to the question like "should I do blah?" is always "try blah and see." Now that's how you actually become a good practitioner.
 
 ```python
 learn.fit_one_cycle(5, 5e-3)
@@ -400,7 +384,7 @@ Now, you could just say what's the average rating for each movie. But there's a 
 
 So how do we deal with that? Well the nice thing is that instead if we look at the movie bias, once we've included the user bias (which for an anime lover might be a very high number because they're just rating a lot of movies highly) and once we account for the specifics of this kind of movie (which again might be people love anime), what's left over is something specific to that movie itself. So it's kind of interesting to look at movie bias numbers as a way of saying what are the best movies or what do people really like as movies even if those people don't rate movies very highly or even if that movie doesn't have the kind of features that people tend to rate highly. So it's kind of nice, it's funny to say this 😆, by using the bias, we get an unbiased movie score.
 
-How do we do that? To make it interesting particularly because this dataset only goes to 1998, let's only look at movies that are plenty of people watch. So we'll use Pandas to grab our `rating_movie` table, group it by title, and then count the number of ratings. Not measuring how high their rating, just how many ratings do they have.
+Because this dataset only goes to 1998, let's only look at movies that are plenty of people watch. So we'll use Pandas to grab our `rating_movie` table, group it by title, and then count the number of ratings. Not measuring how high their rating, just how many ratings do they have.
 
 ```python
 learn.load('dotprod');

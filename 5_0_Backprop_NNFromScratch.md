@@ -2,6 +2,15 @@
 
 [Video](https://youtu.be/uQtTwhpv7Ew) / [Lesson Forum](https://forums.fast.ai/t/lesson-5-official-resources-and-updates/30863) 
 
+# Technical resources
+- [Lesson 5 in-class discussion thread](https://forums.fast.ai/t/lesson-5-discussion-thread/30864)
+- [Lesson 5 advanced discussion](https://forums.fast.ai/t/lesson-5-further-discussion/30865)
+
+## Readings
+- [NY Times Article - Finally, a Machine That Can Finish Your Sentence](https://www.nytimes.com/2018/11/18/technology/artificial-intelligence-language.html)
+- [Netflix and Chill: Building a Recommendation System in Excel - Latent Factor Visualization in Excel blog post](https://www.nytimes.com/2018/11/18/technology/artificial-intelligence-language.html)
+- [An overview of gradient descent optimization algorithms - Sebastian Ruder](http://ruder.io/optimizing-gradient-descent/)
+
 We started with computer vision because it's the most mature out-of-the-box ready to use deep learning application. It's something which if you're not using deep learning, you won't be getting good results. 
 
 Then we moved into NLP because text is another one which you really can't do really well without deep learning. 

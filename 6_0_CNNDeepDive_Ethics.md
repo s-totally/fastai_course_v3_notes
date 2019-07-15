@@ -2,6 +2,24 @@
 
 [Video](https://youtu.be/U7c-nYXrKD4) / [Course Forum](https://forums.fast.ai/t/lesson-6-official-resources-and-updates/31441)
 
+### Technical resources
+- [Lesson 6 in-class discussion thread](https://forums.fast.ai/t/lesson-6-in-class-discussion/31440)
+- [Lesson 6 advanced discussion](https://forums.fast.ai/t/lesson-6-advanced-discussion/31442)
+
+### Readings 
+- [platform.ai discussion](https://forums.fast.ai/t/platform-ai-discussion/31445)
+- [50 Years of Test (Un)fairness: Lessons for Machine Learning](https://128.84.21.199/pdf/1811.10104.pdf)
+- [Convolutions:](http://www.cs.cornell.edu/courses/cs1114/2013sp/sections/S06_convolution.pdf)
+- [Convolution Arithmetic:](https://github.com/vdumoulin/conv_arithmetic/blob/master/README.md)
+- [Normalization:](https://arthurdouillard.com/post/normalization/)
+- [Cross entropy loss:](https://gombru.github.io/2018/05/23/cross_entropy_loss/)
+- [How CNNs work:](https://brohrer.github.io/how_convolutional_neural_networks_work.html)
+- [Image processing and computer vision:](https://openframeworks.cc/ofBook/chapters/image_processing_computer_vision.html)
+- ["Yes you should understand backprop":](https://medium.com/@karpathy/yes-you-should-understand-backprop-e2f06eab496b)
+- [BERT state-of-the-art language model for NLP:](https://towardsdatascience.com/bert-explained-state-of-the-art-language-model-for-nlp-f8b21a9b6270)
+- [Hubel and Wiesel:](https://knowingneurons.com/2014/10/29/hubel-and-wiesel-the-neural-basis-of-visual-perception/)
+- [Perception:](https://grey.colorado.edu/CompCogNeuro/index.php/CCNBook/Perception)
+
 Welcome to lesson 6 where we're going to do a deep dive into computer vision, convolutional neural networks, what is a convolution, and we're also going to learn the final regularization tricks after last lesson learning about weight decay/L2 regularization.
 
 ### Platform.ai 

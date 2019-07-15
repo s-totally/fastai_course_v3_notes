@@ -2,7 +2,22 @@
 
 [Video](https://youtu.be/PW2HKkzdkKY) / [Lesson Forum](https://forums.fast.ai/t/lesson-3-official-resources-and-updates/29732)
 
+## Technical resources
+- [Video Browser with Searchable Transcripts Password: deeplearningSF2018 (do not share outside the forum group) - PRs welcome.](http://videos.fast.ai/)
+- [Quick and easy model deployment using Render](https://course.fast.ai/deployment_render.html)
+- [Introduction to Kaggle API in Google Colab (Part-I) tutorial by @mmiakashs](https://mmiakashs.github.io/blog/2018-09-20-kaggle-api-google-colab/)
+- [Data block API](https://docs.fast.ai/data_block.html)
+- [Python partials](https://docs.python.org/3/library/functools.html#functools.partial)
+- [MoviePy Python module for video editing mentioned by @rachel](https://zulko.github.io/moviepy)
+- [WebRTC example for web video from @etown](https://github.com/etown/dl1/blob/master/face/static/index.html)
+- [Nov 14 Meetup (wait list) Conversation between Jeremy Howard and Leslie Smith](https://www.meetup.com/sfmachinelearning/events/255566613/)
+- [List of transforms in vision.transform package](https://docs.fast.ai/vision.transform.html#List-of-transforms)
 
+## Readings
+- [Cyclical Learning Rates for Training Neural Networks paper by Leslie Smith](https://arxiv.org/abs/1506.01186)
+- [ULMFit fine-tuning for NLP Classification used in language_model_learner()](https://docs.fast.ai/text.html)
+- [Michael Nielsen's book](http://neuralnetworksanddeeplearning.com/)
+- [Useful online courses for ML background: -- Introduction to Machine Learning for Coders taught by @jeremy -- Machine Learning taught by Andrew Ng (coursera)](https://www.coursera.org/learn/machine-learning)
 
 ![](lesson3/2.png)
 

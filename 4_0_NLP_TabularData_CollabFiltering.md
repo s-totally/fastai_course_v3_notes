@@ -2,6 +2,20 @@
 
 [Video](https://youtu.be/C9UdVPE3ynA) / [Lesson Forum](https://forums.fast.ai/t/lesson-4-official-resources-and-updates/30317)
 
+## Technical  resources
+- [Brief lesson notes from @boy1729](https://medium.com/@boy1729/deep-learning-ver3-lesson-4-8f085a1e28ca)
+- [Lesson 4 in-class discussion](https://forums.fast.ai/t/lesson-4-in-class-discussion/30318)
+- [Lesson 4 advanced discussion](https://forums.fast.ai/t/lesson-4-advanced-discussion/30319)
+
+## Readings 
+- [QCon.ai keynote on Analyzing & Preventing Unconscious Bias in Machine Learning](https://www.infoq.com/presentations/unconscious-bias-machine-learning)
+- [PyBay keynote with case studies of what can go wrong, and steps toward solutions](https://www.youtube.com/watch?v=WC1kPtG8Iz8&list=PLtmWHNX-gukLQlMvtRJ19s7-8MrnRV6h6)
+- [Workshop on Word Embeddings, Bias in ML, Why You Don't Like Math, & Why AI Needs You](https://www.youtube.com/watch?v=25nC0n9ERq4)
+- [AI Ethics Resources (includes links to experts to follow)](https://www.fast.ai/2018/09/24/ai-ethics-resources/)
+- [What HBR Gets Wrong About Algorithms and Bias](http://www.fast.ai/2018/08/07/hbr-bias-algorithms/)
+- [When Data Science Destabilizes Democracy and Facilitates Genocide](http://www.fast.ai/2017/11/02/ethics/)
+- [Vim and Ctags for fast function definition lookup](https://andrew.stwrt.ca/posts/vim-ctags/)
+
 We're going to do a deeper dive into NLP transfer learning today. We're going to then look at tabular data and  collaborative filtering which are both super useful applications. 
 
 ## Natural Language Processing (NLP) [[2:00](https://youtu.be/C9UdVPE3ynA?t=120)]

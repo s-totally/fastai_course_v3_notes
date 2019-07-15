@@ -2,6 +2,18 @@
 
 [Video](https://youtu.be/nWpdkZE2_cc) / [Course Forum](https://forums.fast.ai/t/lesson-7-official-resources/32553)
 
+## Technical Resources
+- [Lesson 7 in-class discussion thread](https://forums.fast.ai/t/lesson-7-in-class-chat/32554/118)
+- [Lesson 7 advanced discussion](https://forums.fast.ai/t/lesson-7-further-discussion/32555)
+
+## Readings
+- [Visualizing the Loss Landscape of Neural Nets](https://arxiv.org/abs/1712.09913)
+- [Convolution arithmetic paper shown in class](https://github.com/vdumoulin/conv_arithmetic)
+- [Perceptual Losses for Real-Time Style Transfer and Super-Resolution](https://arxiv.org/abs/1603.08155)
+- [Interview with Jeremy at Github](https://www.youtube.com/watch?v=v16uzPYho4g)
+- [ipyexperiments - handy lib from @stas that is even better than gc.collect at reclaiming your GPU memory](https://github.com/stas00/ipyexperiments/)
+
+
 Welcome to lesson 7! The last lesson of part 1. This will be a pretty intense lesson. Don't let that bother you because partly what I want to do is to give you enough things to think about to keep you busy until part 2. In fact, some of the things we cover today, I'm not going to tell you about some of the details. I'll just point out a few things. I'll say like okay that we're not talking about yet, that we're not talking about yet. Then come back in part 2 to get the details on some of these extra pieces. So today will be a lot of material pretty quickly. You might require a few viewings to fully understand at all or a few experiments and so forth. That's kind of intentional. I'm trying to give you stuff to to keep you amused for a couple of months.
 
 ![](lesson7/1.png)

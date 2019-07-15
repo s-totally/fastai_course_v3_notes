@@ -2,13 +2,16 @@
 
 [Video](https://youtu.be/Egp4Zajhzog) / [Lesson Forum]((https://forums.fast.ai/t/lesson-2-official-resources-and-updates/28630)) / [General Forum]((https://forums.fast.ai/t/faq-resources-and-official-course-updates/27934/))
 
-## Resources
-- [How (and why) to create a good validation set](https://www.fast.ai/2017/11/13/validation-sets/)
-- [There's no such thing as "not a math person" by @rachel](https://www.youtube.com/watch?v=q6DGVGJ1WP4)
+## Technical Resources
 - [Post about an alternative image downloader/cleaner by @cwerner](https://www.christianwerner.net/tech/Build-your-image-dataset-faster/)
 - [A tool for excluding irrelevant images from Google Image Search results by @melonkernel](https://forums.fast.ai/t/tool-for-deleting-files-on-the-google-image-search-page-before-downloading/28900)
 - [Machine Learning is Fun - source of image/number GIF animation shown in lesson](https://medium.com/@ageitgey/machine-learning-is-fun-part-3-deep-learning-and-convolutional-neural-networks-f40359318721)
+
+## Readings
 - [A systematic study of the class imbalance problem in convolutional neural networks, mentioned by Jeremy as a way to solve imbalanced datasets](https://arxiv.org/abs/1710.05381)
+- [How (and why) to create a good validation set](https://www.fast.ai/2017/11/13/validation-sets/)
+- [There's no such thing as "not a math person" by @rachel](https://www.youtube.com/watch?v=q6DGVGJ1WP4)
+
 
 ## Deeper Dive into Computer Vision
 
